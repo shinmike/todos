@@ -6,20 +6,21 @@ export const addTodo = (todo) => {
         payload: {
             id: Math.floor(Math.random() * 1000000),
             title: todo,
-            cross: false
+            cross: false,
+            edit: false
         }
     }
 }
 
-export const crossTodo = (todoIndex, cross) => {
+export const crossTodo = (todoIndex) => {
     return (dispatch, getState) => {
         let state = getState();
-        
+
         let updatedTodos = state.todos.map(todo => {
             if (todo.id === todoIndex) {
                 todo.cross = !todo.cross;
             }
-            return todo
+            return todo;
         })
 
         dispatch({
@@ -51,6 +52,43 @@ export const deleteTodo = (todoIndex, cross) => {
             payload: updatedTodos
         })
     }
+}
+
+export const editTodo = (todoIndex) => {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        let result = state.todos.map(todo => {
+            if (todo.id === todoIndex) {
+                todo.edit = true;
+            }
+            return todo;
+        })
+
+        dispatch({
+            type: "EDIT_TODO",
+            payload: result
+        })
+    }
+}
+
+export const addEditedTodo = (editedTodo, todoObj, allTodos) => {
+
+    let result = allTodos.map((todo) => {
+        if (todo.id === todoObj.id) {
+            todo.title = editedTodo;
+            todo.edit = false;
+        }
+        return todo;
+    })
+
+    return (dispatch) => {
+        dispatch({
+            type: "ADD_EDITED_TODO",
+            payload: result
+        })
+    };
+
 }
 
 export const toggleTodos = (todoIndex, direction) => {

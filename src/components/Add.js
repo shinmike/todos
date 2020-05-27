@@ -1,42 +1,34 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import { addTodo } from '../actions';
 
-class Add extends Component {
+const Add = (props) => {
 
-    state = {
-        term: ""
+    const [term, setTerm] = useState("")
+
+    const handleInputChange = (e) => {
+        setTerm(e.target.value)
     }
 
-    handleInputChange = (e) => {
-        this.setState({
-            term: e.target.value
-        })
-    }
-
-    handleFormSubmit = (e) => {
+    const handleFormSubmit = (e) => {
         e.preventDefault();
-        this.props.addTodo(this.state.term);
-        this.setState({
-            term: ""
-        })
+        props.addTodo(term);
+        setTerm("");
     }
 
-    render() {
-        return (
-            <div>
-                <form className="form-group mt-3" onSubmit={this.handleFormSubmit}>
-                    <label>Add Todo</label>
-                    <input
-                        className="form-control"
-                        value={this.state.term}
-                        onChange={this.handleInputChange}
-                    />
-                </form>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <form className="form-group mt-3" onSubmit={handleFormSubmit}>
+                <label>Add Todo</label>
+                <input
+                    className="form-control"
+                    value={term}
+                    onChange={handleInputChange}
+                />
+            </form>
+        </div>
+    )
 
 
 }
