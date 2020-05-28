@@ -13,8 +13,12 @@ const Add = (props) => {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        props.addTodo(term);
-        setTerm("");
+        if (term.length > 0){
+            props.addTodo(term);
+            setTerm("");
+        } else {
+            alert("write something")
+        }
     }
 
     return (

@@ -8,6 +8,7 @@ import './List.css';
 const List = (props) => {
 
     const [editedTodo, setEditedTodo] = useState("");
+    const [editStatus, setEditStatus] = useState(false)
 
     const handleArrowClick = (index, direction) => {
         props.toggleTodos(index, direction);
@@ -21,18 +22,24 @@ const List = (props) => {
         props.deleteTodo(index, cross);
     }
 
-    const handleEditTodo = (index) => {
-        props.editTodo(index);
+    const handleEditTodo = async (index, status) => {
+        await setEditStatus(status);
+        props.editTodo(index, status);
     }
 
     const handleEditedTodo = (e) => {
         setEditedTodo(e.target.value);
     }
 
-    const handleEditedTodoSubmit = (todoObj, allTodos, e) => {
+    const handleEditedTodoSubmit = (todoObj, e) => {
         e.preventDefault();
-        props.addEditedTodo(editedTodo, todoObj, allTodos)
-        setEditedTodo("");
+        if (editedTodo){
+            props.addEditedTodo(editedTodo, todoObj)
+            setEditedTodo("");
+        } else {
+            alert("write something")
+        }
+        
     }
 
     return (
@@ -43,8 +50,16 @@ const List = (props) => {
                     <div className="list-group-item d-flex justify-content-between align-items-center" key={todo.id}>
                         {   todo.edit 
                             ? 
-                            <form onSubmit={(e) => handleEditedTodoSubmit(todo, props.todos, e )}>
-                                <input className="form-control" value={editedTodo} onChange={handleEditedTodo} />
+                            <form onSubmit={(e) => handleEditedTodoSubmit(todo, e )}>
+                                <input 
+                                    autoFocus 
+                                    className="form-control" 
+                                    placeholder="Type new title" 
+                                    value={editedTodo} 
+                                    onChange={handleEditedTodo}
+                                    onBlur={() => handleEditTodo(todo.id, !editStatus)}
+
+                                />
                             </form>
                             : 
                             <p className={todo.cross ? "mb-0 cross alert alert-warning" : "mb-0 alert alert-success"}
@@ -52,7 +67,7 @@ const List = (props) => {
                             >id: {todo.id}, title: {todo.title}</p>
                         }
                         <div className="d-flex">
-                            <i className="fa fa-edit mx-1" onClick={() => handleEditTodo(todo.id)}></i>
+                            <i className="fa fa-edit mx-1" onClick={() => handleEditTodo(todo.id, !editStatus)}></i>
                             <i className={todo.cross ? "fa fa-trash mx-1" : ""} onClick={() => handleDeleteTodo(todo.id, todo.cross)}></i>
                             <i className="fa fa-arrow-up mx-1" onClick={() => handleArrowClick(index, "up")}></i>
                             <i className="fa fa-arrow-down mx-1" onClick={() => handleArrowClick(index, "down")}></i>

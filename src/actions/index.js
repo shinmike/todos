@@ -54,13 +54,17 @@ export const deleteTodo = (todoIndex, cross) => {
     }
 }
 
-export const editTodo = (todoIndex) => {
+export const editTodo = (todoIndex, status) => {
     return (dispatch, getState) => {
         let state = getState();
 
         let result = state.todos.map(todo => {
             if (todo.id === todoIndex) {
-                todo.edit = true;
+                if (status){
+                    todo.edit = true;
+                } else {
+                    todo.edit = false;
+                }
             }
             return todo;
         })
@@ -72,17 +76,18 @@ export const editTodo = (todoIndex) => {
     }
 }
 
-export const addEditedTodo = (editedTodo, todoObj, allTodos) => {
+export const addEditedTodo = (editedTodo, todoObj) => {
+    return (dispatch, getState) => {
+        let state = getState();
 
-    let result = allTodos.map((todo) => {
-        if (todo.id === todoObj.id) {
-            todo.title = editedTodo;
-            todo.edit = false;
-        }
-        return todo;
-    })
+        let result = state.todos.map((todo) => {
+            if (todo.id === todoObj.id) {
+                todo.title = editedTodo;
+                todo.edit = false;
+            }
+            return todo;
+        })
 
-    return (dispatch) => {
         dispatch({
             type: "ADD_EDITED_TODO",
             payload: result
